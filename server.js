@@ -7,7 +7,21 @@ const app = express();
 // Define la ruta de entrada para las solicitudes de Alexa
 app.post('/alexa', express.json(), (req, res) => {
   const skill = Alexa.SkillBuilders.custom()
-    .addRequestHandlers(/* Manejadores de solicitudes de Alexa */)
+    .addRequestHandlers({
+      sexoIntentHandler: {
+        canHandle(handlerInput) {
+          return (
+            Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+            Alexa.getIntentName(handlerInput.requestEnvelope) === 'sexoIntent'
+          );
+        },
+        handle(handlerInput) {
+          // Acción a realizar cuando se activa la intención "EncenderLuces"
+          const speechText = 'hay sexo en expres';
+          return handlerInput.responseBuilder.speak(speechText).getResponse();
+        },
+      },
+    })
     .create();
 
   const adapter = new ExpressAdapter(skill, req, res);
